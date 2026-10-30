@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1" />
+<meta name="theme-color" content="#2563eb" />
+<title>📚 Mon Cours à Distance</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ================= LOBBY ================= -->
+<div id="lobby" class="lobby">
+  <div class="card">
+    <div class="logo">📚</div>
+    <h1>Mon Cours</h1>
+    <p class="hint">Choisis ton rôle et rejoins le cours</p>
+
+    <div class="role-buttons">
+      <button data-role="parent" class="btn-big btn-parent">
+        <span class="emoji">👨‍🏫</span>
+        <span class="label">Papa / Maman</span>
+        <span class="sub">Je crée la session</span>
+      </button>
+      <button data-role="child" class="btn-big btn-child">
+        <span class="emoji">👧</span>
+        <span class="label">Moi (enfant)</span>
+        <span class="sub">Je rejoins papa</span>
+      </button>
+    </div>
+
+    <div id="childJoin" class="hidden">
+      <input id="codeInput" placeholder="Colle le code de papa ici" autocomplete="off" />
+      <button id="joinBtn" class="btn-join">➡️ Rejoindre le cours</button>
+    </div>
+
+    <div id="parentWait" class="hidden">
+      <p class="hint">Ton code de session :</p>
+      <div id="myCode" class="my-code">----</div>
+      <button id="copyCode" class="btn-copy">📋 Copier le code</button>
+      <p class="hint small">Envoie ce code à ta fille par WhatsApp</p>
+    </div>
+
+    <div id="status" class="status"></div>
+  </div>
+</div>
+
+<!-- ================= SALLE ================= -->
+<div id="classroom" class="hidden">
+
+  <header class="topbar">
+    <span class="room-name" id="roomName">📚 Cours</span>
+    <button class="topbtn" id="toggleVideoBtn">📹</button>
+    <button class="topbtn" id="helpBtn">❓</button>
+    <button class="topbtn danger" id="quitBtn">🚪</button>
+  </header>
+
+  <div class="layout">
+
+    <!-- Vidéo -->
+    <aside class="video-panel" id="videoPanel">
+      <div class="video-wrap">
+        <video id="remoteVideo" autoplay playsinline></video>
+        <div class="waiting" id="waitingMsg">⏳ En attente...</div>
+        <video id="localVideo" autoplay playsinline muted></video>
+      </div>
+      <div class="big-controls">
+        <button class="ctrl-big" id="micBtn"><span class="icon">🎤</span></button>
+        <button class="ctrl-big" id="camBtn"><span class="icon">📷</span></button>
+      </div>
+      <div class="reactions">
+        <button class="reaction" data-emoji="👍">👍</button>
+        <button class="reaction" data-emoji="❤️">❤️</button>
+        <button class="reaction" data-emoji="😂">😂</button>
+        <button class="reaction" data-emoji="🌟">🌟</button>
+        <button class="reaction" data-emoji="🤔">🤔</button>
+        <button class="reaction" data-emoji="👏">👏</button>
+      </div>
+    </aside>
+
+    <!-- Tableau -->
+    <section class="board-panel" id="boardPanel">
+      <div class="toolbar">
+        <div class="tool-group">
+          <button class="tool active" id="penBtn"><span>✏️</span><span class="t-lbl">Stylo</span></button>
+          <button class="tool" id="eraserBtn"><span>🧽</span><span class="t-lbl">Gomme</span></button>
+          <button class="tool" id="textBtn"><span>🅰️</span><span class="t-lbl">Texte</span></button>
+          <button class="tool" id="pointerBtn"><span>👆</span><span class="t-lbl">Montrer</span></button>
+        </div>
+        <div class="color-group">
+          <button class="color-dot active" data-color="#2563eb" style="background:#2563eb"></button>
+          <button class="color-dot" data-color="#ef4444" style="background:#ef4444"></button>
+          <button class="color-dot" data-color="#10b981" style="background:#10b981"></button>
+          <button class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></button>
+          <button class="color-dot" data-color="#8b5cf6" style="background:#8b5cf6"></button>
+          <button class="color-dot" data-color="#000000" style="background:#000"></button>
+        </div>
+        <div class="action-group">
+          <button class="tool" id="undoBtn">↩️</button>
+          <button class="tool" id="clearBtn">🗑️</button>
+          <button class="tool" id="uploadBtn">📄</button>
+          <button class="tool" id="saveBtn">💾</button>
+        </div>
+      </div>
+
+      <div class="canvas-wrap">
+        <img id="bgImage" class="bg-image hidden" />
+        <div id="pointerDot" class="pointer-dot hidden"></div>
+        <canvas id="board"></canvas>
+      </div>
+
+      <div id="reactionLayer" class="reaction-layer"></div>
+    </section>
+
+  </div>
+
+  <div class="statusbar">
+    <span id="connStatus">🔴 Non connecté</span>
+    <span id="controlStatus"></span>
+  </div>
+</div>
+
+<!-- Modale aide -->
+<div id="helpModal" class="modal hidden">
+  <div class="modal-content">
+    <h2>❓ Aide</h2>
+    <ul class="help-list">
+      <li>✏️ <b>Stylo</b> : dessine avec ton doigt</li>
+      <li>🧽 <b>Gomme</b> : efface un trait</li>
+      <li>🅰️ <b>Texte</b> : tape un mot</li>
+      <li>👆 <b>Montrer</b> : pointe sans dessiner</li>
+      <li>📄 <b>Exercice</b> : ajoute une photo</li>
+      <li>💾 <b>Sauver</b> : télécharge le tableau</li>
+      <li>🎤 <b>Micro</b> : pour parler</li>
+      <li>📷 <b>Caméra</b> : pour te voir</li>
+    </ul>
+    <button class="btn-big btn-parent" id="closeHelp">OK 👍</button>
+  </div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<!-- PeerJS depuis CDN -->
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
