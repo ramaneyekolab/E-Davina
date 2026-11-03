@@ -30,15 +30,19 @@
     </div>
 
     <div id="childJoin" class="hidden">
-      <input id="codeInput" placeholder="Colle le code de papa ici" autocomplete="off" />
+      <input id="childNameInput" placeholder="Entre ton prénom" autocomplete="off" />
+      <input id="codeInput" placeholder="Colle le code de papa" autocomplete="off" />
       <button id="joinBtn" class="btn-join">➡️ Rejoindre le cours</button>
     </div>
 
     <div id="parentWait" class="hidden">
-      <p class="hint">Ton code de session :</p>
-      <div id="myCode" class="my-code">----</div>
-      <button id="copyCode" class="btn-copy">📋 Copier le code</button>
-      <p class="hint small">Envoie ce code à ta fille par WhatsApp</p>
+      <input id="parentChildName" placeholder="Prénom de l'enfant" autocomplete="off" />
+      <button id="createSessionBtn" class="btn-join">✨ Créer la session</button>
+      <div id="codeDisplay" class="hidden">
+        <p class="hint">Ton code de session :</p>
+        <div id="myCode" class="my-code">----</div>
+        <button id="copyCode" class="btn-copy">📋 Copier le code</button>
+      </div>
     </div>
 
     <div id="status" class="status"></div>
@@ -50,7 +54,11 @@
 
   <header class="topbar">
     <span class="room-name" id="roomName">📚 Cours</span>
-    <button class="topbtn" id="toggleVideoBtn">📹</button>
+    <button class="topbtn" id="toggleVideoBtn" title="Vidéo">📹</button>
+    <button class="topbtn" id="switchCamBtn" title="Changer caméra">🔄</button>
+    <button class="topbtn" id="resetViewBtn" title="Recentrer">🎯</button>
+    <button class="topbtn" id="exercisesBtn" title="Exercices">📝</button>
+    <button class="topbtn" id="parentPanelBtn" title="Contrôle" style="display:none">👨‍👧</button>
     <button class="topbtn" id="helpBtn">❓</button>
     <button class="topbtn danger" id="quitBtn">🚪</button>
   </header>
@@ -67,6 +75,7 @@
       <div class="big-controls">
         <button class="ctrl-big" id="micBtn"><span class="icon">🎤</span></button>
         <button class="ctrl-big" id="camBtn"><span class="icon">📷</span></button>
+        <button class="ctrl-big" id="photoBtn"><span class="icon">📸</span></button>
       </div>
       <div class="reactions">
         <button class="reaction" data-emoji="👍">👍</button>
@@ -87,6 +96,12 @@
           <button class="tool" id="textBtn"><span>🅰️</span><span class="t-lbl">Texte</span></button>
           <button class="tool" id="pointerBtn"><span>👆</span><span class="t-lbl">Montrer</span></button>
         </div>
+        <div class="tool-group">
+          <button class="tool" id="rulerBtn"><span>📏</span><span class="t-lbl">Règle</span></button>
+          <button class="tool" id="compassBtn"><span>🧭</span><span class="t-lbl">Compas</span></button>
+          <button class="tool" id="letterBtn"><span>🔤</span><span class="t-lbl">Lettre</span></button>
+          <button class="tool" id="paperBtn"><span>📄</span><span class="t-lbl">Papier</span></button>
+        </div>
         <div class="color-group">
           <button class="color-dot active" data-color="#2563eb" style="background:#2563eb"></button>
           <button class="color-dot" data-color="#ef4444" style="background:#ef4444"></button>
@@ -96,17 +111,26 @@
           <button class="color-dot" data-color="#000000" style="background:#000"></button>
         </div>
         <div class="action-group">
-          <button class="tool" id="undoBtn">↩️</button>
-          <button class="tool" id="clearBtn">🗑️</button>
-          <button class="tool" id="uploadBtn">📄</button>
-          <button class="tool" id="saveBtn">💾</button>
+          <button class="tool" id="undoBtn" title="Annuler">↩️</button>
+          <button class="tool" id="clearBtn" title="Effacer dessins">🗑️</button>
+          <button class="tool" id="removeBgBtn" title="Enlever photo" style="display:none">🖼️❌</button>
+          <button class="tool" id="uploadBtn" title="Ajouter exercice">📄</button>
+          <button class="tool" id="saveBtn" title="Sauvegarder">💾</button>
         </div>
       </div>
 
-      <div class="canvas-wrap">
-        <img id="bgImage" class="bg-image hidden" />
+      <div class="canvas-viewport" id="canvasViewport">
+        <div class="canvas-world" id="canvasWorld">
+          <img id="bgImage" class="bg-image hidden" />
+          <canvas id="board"></canvas>
+        </div>
         <div id="pointerDot" class="pointer-dot hidden"></div>
-        <canvas id="board"></canvas>
+      </div>
+
+      <div class="zoom-controls">
+        <button class="zoom-btn" id="zoomIn">➕</button>
+        <button class="zoom-btn" id="zoomOut">➖</button>
+        <span class="zoom-level" id="zoomLevel">100%</span>
       </div>
 
       <div id="reactionLayer" class="reaction-layer"></div>
@@ -120,7 +144,33 @@
   </div>
 </div>
 
-<!-- Modale aide -->
+<!-- ===== PANNEAU CONTRÔLE PARENT ===== -->
+<div id="parentPanel" class="modal hidden">
+  <div class="modal-content">
+    <h2>👨‍👧 Contrôle de l'enfant</h2>
+    <p class="hint">Actions immédiates sur le téléphone de ta fille :</p>
+    <div class="control-list">
+      <button class="ctrl-action" id="cutChildMic">🎤 Couper son micro</button>
+      <button class="ctrl-action" id="cutChildCam">📷 Couper sa caméra</button>
+      <button class="ctrl-action" id="lockChildDraw">🔒 Bloquer son dessin</button>
+      <button class="ctrl-action" id="unlockChildDraw">🔓 Autoriser son dessin</button>
+      <button class="ctrl-action" id="clearChildBoard">🧹 Effacer son tableau</button>
+      <button class="ctrl-action danger" id="kickChild">🚪 Déconnecter l'enfant</button>
+    </div>
+    <button class="btn-big btn-parent" id="closeParentPanel">Fermer</button>
+  </div>
+</div>
+
+<!-- ===== PANNEAU EXERCICES ===== -->
+<div id="exercisesPanel" class="modal hidden">
+  <div class="modal-content">
+    <h2>📝 Exercices & Réponses</h2>
+    <div id="exercisesList"></div>
+    <button class="btn-big btn-parent" id="closeExercises">Fermer</button>
+  </div>
+</div>
+
+<!-- ===== AIDE ===== -->
 <div id="helpModal" class="modal hidden">
   <div class="modal-content">
     <h2>❓ Aide</h2>
@@ -129,10 +179,14 @@
       <li>🧽 <b>Gomme</b> : efface un trait</li>
       <li>🅰️ <b>Texte</b> : tape un mot</li>
       <li>👆 <b>Montrer</b> : pointe sans dessiner</li>
-      <li>📄 <b>Exercice</b> : ajoute une photo</li>
-      <li>💾 <b>Sauver</b> : télécharge le tableau</li>
-      <li>🎤 <b>Micro</b> : pour parler</li>
-      <li>📷 <b>Caméra</b> : pour te voir</li>
+      <li>📏 <b>Règle</b> : trace une ligne droite avec mesure</li>
+      <li>🧭 <b>Compas</b> : trace un cercle en temps réel</li>
+      <li>🔤 <b>Lettre</b> : voir une lettre s'écrire</li>
+      <li>📄 <b>Papier</b> : change le fond (Seyes / ligné)</li>
+      <li>📸 <b>Photo</b> : prends une photo de ton cahier</li>
+      <li>🔄 <b>Caméra</b> : avant / arrière</li>
+      <li>✌️ <b>Pincer</b> : zoomer/dézoomer</li>
+      <li>👆 <b>Glisser</b> : se déplacer dans le tableau</li>
     </ul>
     <button class="btn-big btn-parent" id="closeHelp">OK 👍</button>
   </div>
@@ -140,7 +194,6 @@
 
 <div id="toast" class="toast hidden"></div>
 
-<!-- PeerJS depuis CDN -->
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <script src="app.js"></script>
 </body>
