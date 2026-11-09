@@ -195,8 +195,20 @@
 <div id="toast" class="toast hidden"></div>
 
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<!--<script src="app.js"></script> -->
+
+  <div id="errorBox" style="position:fixed;top:0;left:0;right:0;background:#dc2626;color:white;padding:12px;font-size:12px;font-family:monospace;z-index:99999;max-height:40vh;overflow:auto;display:none;white-space:pre-wrap;"></div>
+<script>
+  window.onerror = function(msg, url, line, col, err) {
+    var box = document.getElementById('errorBox');
+    if (box) {
+      box.style.display = 'block';
+      box.textContent += '⚠️ ERREUR ligne ' + line + ' : ' + msg + '\n\n';
+    }
+  };
+</script>
 <script src="app.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/eruda"></script>
-<script>eruda.init();</script>
+  <!--<script src="https://cdn.jsdelivr.net/npm/eruda"></script>
+//<script>eruda.init();</script>-->
 </body>
 </html>
