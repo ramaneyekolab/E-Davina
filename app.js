@@ -1,7 +1,7 @@
 // ============================================================
 //  MON COURS v5 — Dessin corrigé + Mode Déplacer
 // ============================================================
-
+document.title = "JS OK";
 const $ = (id) => document.getElementById(id);
 const randomCode = () => Math.random().toString(36).substring(2, 8).toUpperCase();
 
