@@ -3,6 +3,9 @@
 // ============================================================
 
 const $ = (id) => document.getElementById(id);
+window.onerror = function(msg, url, line, col, err) {
+  alert('ERREUR LIGNE ' + line + ' : ' + msg);
+};
 const randomCode = () => Math.random().toString(36).substring(2, 8).toUpperCase();
 
 // ============ ÉTAT GLOBAL ============
